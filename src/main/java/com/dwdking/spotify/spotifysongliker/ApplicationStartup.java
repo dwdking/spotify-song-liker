@@ -5,6 +5,7 @@ import java.net.URI;
 
 import com.wrapper.spotify.requests.authorization.authorization_code.AuthorizationCodeUriRequest;
 
+import org.apache.commons.lang3.SystemUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
@@ -25,9 +26,14 @@ public class ApplicationStartup implements ApplicationListener<ApplicationReadyE
         
         URI uri = authorizationCodeUriRequest.execute();
 
+        String openCommand = "xdg-open ";
+        if (SystemUtils.IS_OS_MAC) {
+            openCommand = "open ";
+        }
+
         Runtime rt = Runtime.getRuntime();
         try {
-            rt.exec("xdg-open " + uri.toString());
+            rt.exec(openCommand + uri.toString());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
